@@ -1,3 +1,195 @@
+# Full Vulnerability Export (Complete History) ☆彡
+
+Checkmarx One: Complete Vulnerability Export
+
+## Overview
+
+This project provides a **Python** script to extract the **complete vulnerability history** from a **Checkmarx One (CxOne)** environment using **official APIs**.
+
+Unlike the graphical interface (UI), which imposes time limitations (e.g., 365 days), this script accesses the **entire real history available in the tenant**, including old scans and historical vulnerabilities, making it ideal for:
+
+- Audits
+- Compliance
+- Historical analysis
+- Offline corporate reporting
+
+---
+
+## Objective
+
+- Extract **all vulnerabilities** from the tenant
+- Traverse **all projects and scans**
+- Access the **complete history**, without date cutoffs
+- Retrieve information such as:
+  - `firstFoundAt`
+  - `lastFoundAt`
+- Generate reusable reports in **CSV** and **Excel** formats
+
+---
+
+## Architecture
+
+### Checkmarx One Services
+
+| Service | Endpoint |
+|--------|---------|
+| AST API (Projects / Scans / Results) | `https://<region>.ast.checkmarx.net` |
+| IAM (OAuth2) | `https://<region>.iam.checkmarx.net` |
+
+**Region examples:** `eu`, `us`, `us2`, `eu2`
+
+> **Important**  
+> IAM is **regional**. AST and IAM must belong to the **same region**, otherwise authentication errors will occur (404 / 401).
+
+---
+
+## Authentication
+
+The script uses **OAuth2 – Client Credentials**.
+
+### Required Credentials
+
+- `TENANT_NAME`
+- `CLIENT_ID`
+- `CLIENT_SECRET`
+
+### Authentication Endpoint
+
+```
+POST /auth/realms/{TENANT}/protocol/openid-connect/token
+```
+
+### Header Used
+
+```
+Authorization: Bearer <access_token>
+```
+
+The token is:
+- Automatically renewed
+- Reused during execution
+- Handled with retries in transient failures
+
+---
+
+## Features
+
+- Automatic OAuth2 authentication
+- Automatic token renewal
+- Automatic retries (429 / 5xx)
+- Real pagination (`limit + offset`)
+- Complete collection of:
+  - Projects
+  - Scans
+  - Vulnerabilities (Results)
+- Export to **CSV** and **Excel**
+- Execution without date limits
+
+---
+
+## Exported Data Structure
+
+Each row in the report represents **one vulnerability found in a scan**, containing at minimum:
+
+- Project Name
+- Project ID
+- Scan ID
+- Scan Type (SAST / SCA / IaC / KICS)
+- Severity
+- Vulnerability Type
+- Result ID
+- First Found At
+- Last Found At
+- Scan Date
+
+---
+
+## About the History (Very Important)
+
+- **There is no date filter in the script**
+- All scans existing in the tenant are processed
+- The 365-day limit exists **only in the UI**
+- The API **does not apply temporal cutoffs**
+
+> This guarantees access to the **complete and real history** of vulnerabilities.
+
+---
+
+## Prerequisites
+
+### Environment
+
+- Python **3.9 or higher**
+
+### Python Libraries
+
+- `requests`
+- `pandas`
+- `openpyxl`
+
+### Installation
+
+```bash
+pip install requests pandas openpyxl
+```
+
+---
+
+## Configuration
+
+Edit the following values directly in the script:
+
+```python
+TENANT_NAME   = "YOUR_TENANT"
+CLIENT_ID     = "YOUR_CLIENT_ID"
+CLIENT_SECRET = "YOUR_CLIENT_SECRET"
+
+AST_API_BASE  = "https://eu.ast.checkmarx.net"
+IAM_BASE      = "https://eu.iam.checkmarx.net"
+```
+
+Make sure that **AST and IAM belong to the same region**.
+
+---
+
+## Execution
+
+Run the script with:
+
+```bash
+python export_cxone_full_history.py
+```
+
+---
+
+## Generated Files
+
+At the end of execution, files will be generated with a timestamp:
+
+- `cxone_vulnerabilities_full_history_YYYYMMDD_HHMMSS.xlsx`
+- `cxone_vulnerabilities_full_history_YYYYMMDD_HHMMSS.csv`
+
+These files can be used directly in:
+- Excel
+- Power BI
+- BI tools
+- External audits
+
+---
+
+## Status
+
+- Validated solution  
+- Uses only official APIs  
+- No time limitation  
+- Ready for enterprise and audit use  
+
+---
+
+☆彡
+
+---
+
 # Exportação Completa de Vulnerabilidades (Histórico Total) ☆彡
 
 Checkmarx One: Exportação Completa de Vulnerabilidades
