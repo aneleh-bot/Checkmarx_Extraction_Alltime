@@ -1,6 +1,4 @@
-# Full Vulnerability Export (Complete History) ☆彡
-
-Checkmarx One: Complete Vulnerability Export
+# Checkmarx One: Complete Vulnerability Export ☆彡
 
 ## Overview
 
